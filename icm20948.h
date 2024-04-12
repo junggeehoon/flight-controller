@@ -12,7 +12,7 @@
 #define RAD_TO_DEG 57.2957795
 using namespace std::chrono;
 Timer t;
-I2C i2c(PB_7, PB_6);
+I2C i2c(p28, p27);
 //static BufferedSerial pc(USBTX, USBRX);
 
 /*float clock_s() { return us_ticker_read() / 1000000.0f; }
@@ -23,6 +23,10 @@ uint64_t clock_us() { return us_ticker_read(); }
 // https://www.invensense.com/wp-content/uploads/2016/06/DS-000189-ICM-20948-v1.3.pdf
 // and AK09916 Datasheet and Register Map
 // https://www.akm.com/akm/en/file/datasheet/AK09916C.pdf
+
+
+// User defined variable
+#define CALIBRATION_SAMPLES 2000
 
 //Magnetometer Registers
 #define AK09916_ADDRESS  0x0C 
@@ -169,6 +173,7 @@ uint64_t clock_us() { return us_ticker_read(); }
 #define I2C_SLV4_DO             0x16
 #define I2C_SLV4_DI             0x17
 
+
 // Using the ICM-20948 breakout board, ADO is set to 1
 // Seven-bit device address is 1000100 for ADO = 0 and 1000101 for ADO = 1
 #define ADO 0 
@@ -184,16 +189,16 @@ uint64_t clock_us() { return us_ticker_read(); }
     enum Ascale
     {
       AFS_2G = 0,
-      AFS_4G,
-      AFS_8G,
-      AFS_16G
+      AFS_4G = 1,
+      AFS_8G = 2,
+      AFS_16G = 3
     };
 
     enum Gscale {
       GFS_250DPS = 0,
-      GFS_500DPS,
-      GFS_1000DPS,
-      GFS_2000DPS
+      GFS_500DPS = 1,
+      GFS_1000DPS = 2,
+      GFS_2000DPS = 3
     };
 
     enum Mscale {
@@ -420,9 +425,11 @@ void initAK09916()
   thread_sleep_for(10);
 }
 
+
+
 void initICM20948()
 {
-    // Get stable time source
+  // Get stable time source
   // Auto select clock source to be PLL gyroscope reference if ready else
   writeByte(ICM20948_ADDRESS, PWR_MGMT_1, 0x01);
   thread_sleep_for(200);
@@ -436,8 +443,8 @@ void initICM20948()
   // DLPF_CFG = bits 2:0 = 011; this limits the sample rate to 1000 Hz for both
   // With the ICM20948, it is possible to get gyro sample rates of 32 kHz (!),
   // 8 kHz, or 1 kHz
-  // Set gyroscope full scale range to 250 dps
-  writeByte(ICM20948_ADDRESS, GYRO_CONFIG_1, 0x19);
+  // Set low pass filter and gyroscope full scale range to 250 dps
+  writeByte(ICM20948_ADDRESS, GYRO_CONFIG_1, 0x19); // 0x19 = 00011001
   writeByte(ICM20948_ADDRESS, TEMP_CONFIG, 0x03);
 
   // Set sample rate = gyroscope output rate/(1 + GYRO_SMPLRT_DIV)
@@ -481,6 +488,45 @@ void initICM20948()
   writeByte(ICM20948_ADDRESS, INT_PIN_CFG, 0x22);
   // Enable data ready (bit 0) interrupt
   writeByte(ICM20948_ADDRESS, INT_ENABLE_1, 0x01);
+}
+
+void calibrateAccel() {
+
+    // ADD LOW PASS FILTER????
+
+    // Set accelerometer full-scale to 2 g, maximum sensitivity
+    // writeByte(ICM20948_ADDRESS, ACCEL_CONFIG, 0x00);
+
+    for (int i = 0; i < CALIBRATION_SAMPLES; i++) {
+        readAccelData(accelCount);
+        accelBias[0] += (float)accelCount[0] * aRes;
+        accelBias[1] += (float)accelCount[1] * aRes;
+        accelBias[2] += (float)accelCount[2] * aRes;
+    }
+    accelBias[0] /= CALIBRATION_SAMPLES;
+    accelBias[1] /= CALIBRATION_SAMPLES;
+    accelBias[2] /= CALIBRATION_SAMPLES;
+}
+
+void calibrateGyro() {
+
+    // Set low-pass filter and sensitivity to 250 degrees per second
+    // writeByte(ICM20948_ADDRESS, GYRO_CONFIG_1, 0x19); // 0x19 = 00011001
+    // Set sample rate to 1 kHz
+    // writeByte(ICM20948_ADDRESS, GYRO_SMPLRT_DIV, 0x00);
+    // Set gyro full-scale to 250 degrees per second, maximum sensitivity
+    // writeByte(ICM20948_ADDRESS, GYRO_CONFIG_1, 0x00);
+    
+
+    for (int i = 0; i < CALIBRATION_SAMPLES; i++) {
+        readGyroData(gyroCount);
+        gyroBias[0] += (float)gyroCount[0] * gRes;
+        gyroBias[1] += (float)gyroCount[1] * gRes;
+        gyroBias[2] += (float)gyroCount[2] * gRes;
+    }
+    gyroBias[0] /= CALIBRATION_SAMPLES;
+    gyroBias[1] /= CALIBRATION_SAMPLES;
+    gyroBias[2] /= CALIBRATION_SAMPLES;
 }
 
 
