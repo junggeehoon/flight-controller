@@ -47,8 +47,9 @@ void setup()
   
   // Read the WHO_AM_I register, this is a good test of communication
   byte c = readByte(ICM20948_ADDRESS, WHO_AM_I_ICM20948);
-  sprintf(msg,"ICM20948 I AM 0x %x I should be 0x %x",c,0xEA);
-  pc.write(msg, strlen(msg));
+//   sprintf(msg,"ICM20948 I AM 0x %x I should be 0x %x",c,0xEA);
+//   pc.write(msg, strlen(msg));
+
   if (c == 0xEA) // WHO_AM_I should always be 0x71
   {
     sprintf(msg,"ICM20948 is online...\n");
@@ -56,37 +57,37 @@ void setup()
    // writeByte(ICM20948_ADDRESS, REG_BANK_SEL, 0x10);
     // Start by performing self test and reporting values
     ICM20948SelfTest(selft);
-    sprintf(msg,"x-axis self test: acceleration trim within : %f of factory value\n",selft[0]);
-    pc.write(msg, strlen(msg));
-    sprintf(msg,"y-axis self test: acceleration trim within : %f of factory value\n",selft[1]);
-    pc.write(msg, strlen(msg));
-    sprintf(msg,"z-axis self test: acceleration trim within : %f  of factory value\n",selft[2]);
-    pc.write(msg, strlen(msg));
-    sprintf(msg,"x-axis self test: gyration trim within : %f of factory value\n",selft[3]);
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"x-axis self test: acceleration trim within : %f of factory value\n",selft[0]);
+    // pc.write(msg, strlen(msg));
+    // sprintf(msg,"y-axis self test: acceleration trim within : %f of factory value\n",selft[1]);
+    // pc.write(msg, strlen(msg));
+    // sprintf(msg,"z-axis self test: acceleration trim within : %f  of factory value\n",selft[2]);
+    // pc.write(msg, strlen(msg));
+    // sprintf(msg,"x-axis self test: gyration trim within : %f of factory value\n",selft[3]);
+    // pc.write(msg, strlen(msg));
     sprintf(msg,"y-axis self test: gyration trim within : %f of factory value\n",selft[4]);
     pc.write(msg, strlen(msg));
-    sprintf(msg,"z-axis self test: gyration trim within : %f of factory value\n",selft[5]);
-    pc.write(msg, strlen(msg));
-        // Calibrate gyro and accelerometers, load biases in bias registers
-    calibrateICM20948(gyroBias, accelBias);
+    // sprintf(msg,"z-axis self test: gyration trim within : %f of factory value\n",selft[5]);
+    // pc.write(msg, strlen(msg));
+    // Calibrate gyro and accelerometers, load biases in bias registers
+    // calibrateICM20948(gyroBias, accelBias);
 
     initICM20948();
     // Initialize device for active mode read of acclerometer, gyroscope, and
     // temperature
-    sprintf(msg,"ICM20948 initialized for active data mode....\n");
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"ICM20948 initialized for active data mode....\n");
+    // pc.write(msg, strlen(msg));
         // Read the WHO_AM_I register of the magnetometer, this is a good test of
     // communication
     tempCount =readTempData();  // Read the adc values
         // Temperature in degrees Centigrade
     temperature = ((float) tempCount) / 333.87 + 21.0;
         // Print temperature in degrees Centigrade
-    sprintf(msg,"Temperature is %f degrees C\n",temperature);
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"Temperature is %f degrees C\n",temperature);
+    // pc.write(msg, strlen(msg));
     byte d = readByte(AK09916_ADDRESS<<1, WHO_AM_I_AK09916);
-    sprintf(msg,"AK8963 I AM 0x %x  I should be 0x %d\n",d,0x09);
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"AK8963 I AM 0x %x  I should be 0x %d\n",d,0x09);
+    // pc.write(msg, strlen(msg));
 
     if (d != 0x09)
     {
@@ -97,10 +98,10 @@ void setup()
     }
 
     // Get magnetometer calibration from AK8963 ROM
-    initAK09916();
+    // initAK09916();
     // Initialize device for active mode read of magnetometer
-    sprintf(msg,"AK09916 initialized for active data mode....\n");
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"AK09916 initialized for active data mode....\n");
+    // pc.write(msg, strlen(msg));
    
   
 
@@ -110,12 +111,12 @@ void setup()
     getMres();
     // The next call delays for 4 seconds, and then records about 15 seconds of
     // data to calculate bias and scale.
-    magCalICM20948(magBias, magScale);
-    sprintf(msg,"AK09916 mag biases (mG)\n %f\n%f\n%f\n",magBias[0],magBias[1],magBias[2]);
-    pc.write(msg, strlen(msg));
-   sprintf(msg,"AK09916 mag scale (mG)\n %f\n%f\n%f\n",magScale[0],magScale[1],magScale[2]);
-    pc.write(msg, strlen(msg));
-    thread_sleep_for(2000); // Add delay to see results before pc spew of data
+    // magCalICM20948(magBias, magScale);
+//     sprintf(msg,"AK09916 mag biases (mG)\n %f\n%f\n%f\n",magBias[0],magBias[1],magBias[2]);
+//     pc.write(msg, strlen(msg));
+//    sprintf(msg,"AK09916 mag scale (mG)\n %f\n%f\n%f\n",magScale[0],magScale[1],magScale[2]);
+//     pc.write(msg, strlen(msg));
+    // thread_sleep_for(2000); // Add delay to see results before pc spew of data
   } // if (c == 0x71)
   else
   {
@@ -127,107 +128,101 @@ void setup()
     exit(0);
   }
 }
-int main(void)
-{int i=0;
+
+#define ALPHA 0.00  // Complementary filter constant: not using gyro basically
+#define DESIRED_ANGLE 0.0
+
+// PID gains
+#define KP 0.1  // Proportional gain
+#define KI 0.01  // Integral gain
+#define KD 0.05  // Derivative gain
+
+
+// Complemtary filter for combination with gyro
+#define ALPHA 0.98
+
+int main(void) {
     setup();
-while(i<100)
-{
-  // If intPin goes high, all data registers have new data
-  // On interrupt, check if data ready interrupt
-  if (readByte(ICM20948_ADDRESS, INT_STATUS_1) & 0x01)
-{
-    readAccelData(accelCount);  // Read the x/y/z adc values
 
-    // Now we'll calculate the accleration value into actual g's
-    // This depends on scale being set
-    ax = (float)accelCount[0] * aRes; // - accelBias[0];
-    ay = (float)accelCount[1] * aRes; // - accelBias[1];
-    az = (float)accelCount[2] * aRes; // - accelBias[2];
-    sprintf(msg,"X-acceleration: %f mg\n",1000*ax);
+    sprintf(msg,"Calibrating gyro...");
     pc.write(msg, strlen(msg));
-    sprintf(msg,"Y-acceleration: %f mg\n",1000*ay);
+    calibrateGyro();
+    sprintf(msg, "\ngy bias: %f degrees", gyroBias[1]);
     pc.write(msg, strlen(msg));
-    sprintf(msg,"Z-acceleration: %f mg\n",1000*az);
-    pc.write(msg, strlen(msg));
-    readGyroData(gyroCount);  // Read the x/y/z adc values
 
-    // Calculate the gyro value into actual degrees per second
-    // This depends on scale being set
-    gx = (float)gyroCount[0] * gRes;
-    gy = (float)gyroCount[1] * gRes;
-    gz = (float)gyroCount[2] * gRes;
-sprintf(msg,"x -gyroscope: %f and bias %f deg/s\n",gx,gyroBias[0]);
-        pc.write(msg, strlen(msg));
-   readMagData(magCount);  // Read the x/y/z adc values
+    float pitch_gyro = 0.0f;
+    float pitch_accel = 0.0f;
+    float pitch = 0.0f;
+    float dt = 0.0f; // Time delta in seconds
+    float error = 0.0f;
+    float previous_error = 0.0f;
+    float pid_p = 0.0f;
+    float pid_i = 0.0f;
+    float pid_d = 0.0f;
+    float pid = 0.0f;
+    Timer timer;
+    timer.start();
+    int count = 0;
 
-    // Calculate the magnetometer values in milliGauss
-    // Include factory calibration per data sheet and user environmental
-    // corrections
-    // Get actual magnetometer value, this depends on scale being set
-    mx = (float)magCount[0] * mRes - magBias[0];
-    my = (float)magCount[1] * mRes - magBias[1];
-    mz = (float)magCount[2] * mRes - magBias[2];
-   // if (readByte(ICM20948_ADDRESS, INT_STATUS) & 0x01)
+    while (1) {
+        if (readByte(ICM20948_ADDRESS, INT_STATUS_1) & 0x01) {
 
-  // Must be called before updating quaternions!
-  updateTime();
+            // Read accelerometer data
+            readAccelData(accelCount);
+            ax = (float)accelCount[0] * aRes - accelBias[0];
+            ay = (float)accelCount[1] * aRes - accelBias[1];
+            az = (float)accelCount[2] * aRes - accelBias[2];
+            pitch = atan2(ax, sqrt(ay * ay + az * az)) * RAD_TO_DEG;
 
-  // Sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of
-  // the magnetometer; the magnetometer z-axis (+ down) is opposite to z-axis
-  // (+ up) of accelerometer and gyro! We have to make some allowance for this
-  // orientationmismatch in feeding the output to the quaternion filter. For the
-  // ICM20948, we have chosen a magnetic rotation that keeps the sensor forward
-  // along the x-axis just like in the LSM9DS0 sensor. This rotation can be
-  // modified to allow any convenient orientation convention. This is ok by
-  // aircraft orientation standards! Pass gyro rate as rad/s
-  MahonyQuaternionUpdate(ax, ay, az, gx * DEG_TO_RAD,
-                         gy * DEG_TO_RAD, gz * DEG_TO_RAD, my,
-                         mx, mz, deltat);
+            // Read gyroscope data
+            readGyroData(gyroCount);
+            gx = (float)gyroCount[0] * gRes - gyroBias[0];
+            gy = (float)gyroCount[1] * gRes - gyroBias[1];
+            gz = (float)gyroCount[2] * gRes - gyroBias[2];
 
-// Define output variables from updated quaternion---these are Tait-Bryan
-// angles, commonly used in aircraft orientation. In this coordinate system,
-// the positive z-axis is down toward Earth. Yaw is the angle between Sensor
-// x-axis and Earth magnetic North (or true North if corrected for local
-// declination, looking down on the sensor positive yaw is counterclockwise.
-// Pitch is angle between sensor x-axis and Earth ground plane, toward the
-// Earth is positive, up toward the sky is negative. Roll is angle between
-// sensor y-axis and Earth ground plane, y-axis up is positive roll. These
-// arise from the definition of the homogeneous rotation matrix constructed
-// from quaternions. Tait-Bryan angles as well as Euler angles are
-// non-commutative; that is, the get the correct orientation the rotations
-// must be applied in the correct order which for this configuration is yaw,
-// pitch, and then roll.
-// For more see
-// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-// which has additional links.
-      yaw   = atan2(2.0f * (*(getQ()+1) * *(getQ()+2) + *getQ()
-                    * *(getQ()+3)), *getQ() * *getQ() + *(getQ()+1)
-                    * *(getQ()+1) - *(getQ()+2) * *(getQ()+2) - *(getQ()+3)
-                    * *(getQ()+3));
-      pitch = -asin(2.0f * (*(getQ()+1) * *(getQ()+3) - *getQ()
-                    * *(getQ()+2)));
-      roll  = atan2(2.0f * (*getQ() * *(getQ()+1) + *(getQ()+2)
-                    * *(getQ()+3)), *getQ() * *getQ() - *(getQ()+1)
-                    * *(getQ()+1) - *(getQ()+2) * *(getQ()+2) + *(getQ()+3)
-                    * *(getQ()+3));
-      pitch *= RAD_TO_DEG;
-      yaw   *= RAD_TO_DEG;
+            // Calculate time delta
+            auto duration = timer.elapsed_time();
+            dt = duration_cast<milliseconds>(duration).count() / 1000.0f;
+            timer.reset();  // Reset timer for the next loop
 
-      // Declination of SparkFun Electronics (40°05'26.6"N 105°11'05.9"W) is
-      //    8° 30' E  ± 0° 21' (or 8.5°) on 2016-07-19
-      //    1° 46' E 2021-03-27
-      // - http://www.ngdc.noaa.gov/geomag-web/#declination
-      yaw  -= 1.7666;
-      roll *= RAD_TO_DEG;
+            pitch_gyro = pitch + gy * dt;
 
-     
-        sprintf(msg,"Yaw %f, Pitch %f, Roll %f\n ",yaw,pitch,roll);
-        pc.write(msg, strlen(msg));
-    sumCount = 0;
-    sum = 0;
-}    
-      i++;
-     //thread_sleep_for(200);
+            // Apply complementary filter
+            pitch = ALPHA * pitch_gyro + (1 - ALPHA) * pitch_accel;
+            // while (pitch > 180.0f) pitch -= 360.0f;
+            // while (pitch < -180.0f) pitch += 360.0f;
+
+            // Calculate PID error terms
+            error = pitch - DESIRED_ANGLE;
+            
+            pid_p = KP * error;
+
+            pid_i += KI * error * dt;
+
+            pid_d = KD * (error - previous_error) / dt;
+
+            // Calculate PID output
+            pid = pid_p + pid_i + pid_d;
+
+            // Implement PID output to control the motor here
+            previous_error = error;
+
+            if (pid > 1) pid = 1;
+            if (pid < 0) pid = 0;
+
+            // if (abs(error) > NOISE_THRESHOLD) {  // Ignore small errors within the noise threshold
+                
+            // }
+            count++;
+
+            if (count % 200 == 0) {
+                count = 0; 
+                sprintf(msg, "\npitch: %f degrees", pitch);
+                pc.write(msg, strlen(msg));
+            }
+
+        }
+        // wait_us(1000000);  // Delay for a while before the next reading
     }
-  return 0;
+    return 0;
 }
