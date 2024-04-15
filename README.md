@@ -37,4 +37,5 @@ $Pitch = 0.98 *gyro pitch + 0.02*acc pitch $
 
 
 - PID control <a name="PID"></a>
-  $ u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t) $
+
+  $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
