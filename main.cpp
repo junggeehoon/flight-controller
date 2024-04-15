@@ -14,6 +14,7 @@
 
 #include "mbed.h"
 #include "ahrs.h"
+#include "Servo.h"
 #include "icm20948.h"
 #include <cstdio>
 #include <stdint.h>
@@ -23,6 +24,8 @@ Timer t1;
 typedef unsigned char byte;
 float selft[6];
 static BufferedSerial pc(USBTX, USBRX);
+
+Servo myservo(p21);
 
 
 char msg[255];
@@ -129,13 +132,24 @@ void setup()
   }
 }
 
+void calibrateESC() {
+    myservo = 0.0;
+    wait_us(500000); //ESC detects signal
+//Required ESC Calibration/Arming sequence  
+//sends longest and shortest PWM pulse to learn and arm at power on
+    myservo = 1.0; //send longest PWM
+    wait_us(8000000);
+    myservo = 0.0; //send shortest PWM
+    wait_us(8000000);
+}
+
 #define ALPHA 0.00  // Complementary filter constant: not using gyro basically
-#define DESIRED_ANGLE 0.0
+#define DESIRED_ANGLE 10.0
 
 // PID gains
-#define KP 0.1  // Proportional gain
-#define KI 0.01  // Integral gain
-#define KD 0.05  // Derivative gain
+#define KP 0.009  // Proportional gain
+#define KI 0.00  // Integral gain
+#define KD 0.00  // Derivative gain
 
 
 // Complemtary filter for combination with gyro
@@ -144,9 +158,14 @@ void setup()
 int main(void) {
     setup();
 
+    sprintf(msg,"Calibrating the ESC...");
+    pc.write(msg, strlen(msg));
+    calibrateESC();
+
     sprintf(msg,"Calibrating gyro...");
     pc.write(msg, strlen(msg));
     calibrateGyro();
+    
     sprintf(msg, "\ngy bias: %f degrees", gyroBias[1]);
     pc.write(msg, strlen(msg));
 
@@ -165,6 +184,7 @@ int main(void) {
     int count = 0;
 
     while (1) {
+
         if (readByte(ICM20948_ADDRESS, INT_STATUS_1) & 0x01) {
 
             // Read accelerometer data
@@ -189,8 +209,6 @@ int main(void) {
 
             // Apply complementary filter
             pitch = ALPHA * pitch_gyro + (1 - ALPHA) * pitch_accel;
-            // while (pitch > 180.0f) pitch -= 360.0f;
-            // while (pitch < -180.0f) pitch += 360.0f;
 
             // Calculate PID error terms
             error = pitch - DESIRED_ANGLE;
@@ -207,22 +225,20 @@ int main(void) {
             // Implement PID output to control the motor here
             previous_error = error;
 
-            if (pid > 1) pid = 1;
-            if (pid < 0) pid = 0;
+            if (pid > 1) pid = 0.5;
 
-            // if (abs(error) > NOISE_THRESHOLD) {  // Ignore small errors within the noise threshold
-                
-            // }
             count++;
 
             if (count % 200 == 0) {
                 count = 0; 
-                sprintf(msg, "\npitch: %f degrees", pitch);
+                sprintf(msg, "\nPID: %f", pid);
                 pc.write(msg, strlen(msg));
             }
+            
+            myservo = 0.43 + pid;
+
 
         }
-        // wait_us(1000000);  // Delay for a while before the next reading
     }
     return 0;
 }
