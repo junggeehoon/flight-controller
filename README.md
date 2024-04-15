@@ -8,8 +8,8 @@ Drones have a wide range of applications in agriculture, military and defense, a
 # Table of Contents
 1. [Hardware](#hardware)
 2. [First Step: One-axis PID Seesaw](#step1)
-    a. [IMU]((#IMU)
-    b. [PID Control](#PID)
+    - [IMU](#IMU)
+    - [PID Control](#PID)
 5. [Third Example](#third-example)
 6. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
 
