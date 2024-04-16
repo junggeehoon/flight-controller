@@ -2,7 +2,7 @@
 This documentation is for our team project in the Embedded Systems (ECE 4180). Our group includes Geehoon Jung, Mindy Yao, Jooyeon Lee, and Nikita Gulati.
 
 # Project Overview
-Drones have a wide range of applications in agriculture, military and defense, and transportation. While commercial drones use pre-existing flighth controller modules like speedybee, our project works towards constructing a quadcopter with four motors piloted by ARM mbed LPC1768 in integration with an IMU module. Due to limited time we have for the project and the unforseenability of the US delivery services, we broke down the project into small chunks and only move forward when the prior step is accomplished.  
+Drones have a wide range of applications in agriculture, military and defense, and transportation. While commercial drones use pre-existing flight controller modules like speedybee, our project works towards constructing a quadcopter with four motors piloted by ARM mbed LPC1768 in integration with an IMU module. Due to limited time we have for the project, we broke down the project into small chunks focusing PID controller system to balance the drone automatically.
 
 # Table of Contents
 1. [Hardware](#hardware)
