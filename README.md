@@ -34,7 +34,9 @@ The given example code in class utilizes readings from magnometer, gyroscope, an
 Accelerometer alone: $\theta_A = \arctan(\frac{ax}{\sqrt{ay^2+az^2}})$
 Gyrscope alone: $\theta_G = \theta_G + \omega \cdot dt$
 
-Accelerometer has unstable reading but does not drift much, while gyroscope readings are precise yet tend to drift. A complementary filter is used to combine the feature of both and optimize the pitch reading, thus leading to: 
+Accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods of time.
+
+A complementary filter is used to combine the feature of both and optimize the pitch reading, thus leading to: 
 $\theta = 0.98*\theta_G + 0.02*\theta_A$
 
 
