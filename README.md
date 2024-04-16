@@ -7,19 +7,23 @@ Drones have a wide range of applications in agriculture, military and defense, a
 
 # Table of Contents
 1. [Hardware](#hardware)
-2. [First Step: One-axis PID Seesaw](#step1)
+2. [Schematic Diagram](#schematic)
+3. [First Step: One-axis PID Seesaw](#step1)
     - [IMU](#IMU)
     - [PID Control](#PID)
 5. [Third Example](#third-example)
 6. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
 
 
-## Hardware List <a name="hardware"></a>
+## Hardware <a name="hardware"></a>
 - Mbed LPC1768
 - ICM-20948
 - A2212 brushless motor
 - 30A ESC
 - One-axis PID testing bed
+
+## Schematic Diagram <a name="schematic"></a>
+
 
 ## First Step: One-axis PID Seesaw <a name="step1"></a>
 The first goal of our project is to use two motors and IMU to create a seesaw-looking testing bed for PID control on only y axis. This step aims to get teammembers familiarize with the PID control algorithm, test all the existing hardware componenets, and get IMU functional reading the pitch angle. 
