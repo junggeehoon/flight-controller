@@ -5,14 +5,16 @@ This documentation is for our team project in the Embedded Systems (ECE 4180). O
 Drones have a wide range of applications in agriculture, military and defense, and transportation. While commercial drones use pre-existing flight controller modules like speedybee, our project works towards constructing a quadcopter with four motors piloted by ARM mbed LPC1768 in integration with an IMU module. Due to limited time we have for the project, we broke down the project into small chunks focusing PID controller system to balance the drone automatically.
 
 # Table of Contents
-1. [Hardware](#hardware)
-2. [Schematic Diagram](#schematic)
-3. [First Step: Measuring accurate angle with IMU](#step1)
+- [Hardware](#hardware)
+- [Schematic Diagram](#schematic)
+- [First Step: Measuring accurate angle with IMU](#step1)
     - [Accelerometer](#accel)
     - [Gyroscope](#gyro)
     - [Complementary Filter](#FILTER)
-5. [Second Step: Controlling Brushless Motors with ESC’s and PWM](#step2)
-6. [Third Step: Stabilizing Seesaw with PID Controllers](#step3)
+- [Second Step: Controlling Brushless Motors with ESC’s and PWM](#step2)
+- [Third Step: Stabilizing Seesaw with PID Controllers](#step3)
+- [Results](#results)
+- [Conclusion](#conclusion)
 
 
 # Hardware <a name="hardware"></a>
@@ -49,3 +51,8 @@ $\theta = 0.98*\theta_G + 0.02*\theta_A$
 ## PID control <a name="PID"></a>
 
   $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
+
+
+# Results<a name="results"></a>
+
+# Conclusion<a name="conclusion"></a>
