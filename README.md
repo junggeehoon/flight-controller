@@ -22,6 +22,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - One-axis PID testing bed
 
 ## Schematic Diagram <a name="schematic"></a>
+![circuit](https://github.com/junggeehoon/flight-controller/assets/23613481/04a26715-009d-446a-9a19-c7e88912c7b0)
 
 
 ## First Step: One-axis PID Seesaw <a name="step1"></a>
