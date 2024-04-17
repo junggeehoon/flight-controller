@@ -15,6 +15,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - [Third Step: Stabilizing Seesaw with PID Controllers](#step3)
 - [Results](#results)
 - [Conclusion](#conclusion)
+- [References](#references)
 
 
 # Hardware <a name="hardware"></a>
@@ -31,14 +32,20 @@ Drones have a wide range of applications in agriculture, military and defense, a
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
 The first goal of our project is to use two motors and IMU to create a seesaw-looking testing bed for PID control on only the y-axis. A critical initial step in this process involves obtaining a precise and stable measurement of the system's angle, which serves as a fundamental component of our feedback control system. The PID controller begins by reading $\theta$, the current pitch angle, and compares it to a target value. Based on this comparison, adjustments are made using the Proportional, Integral, and Derivative constants to align the actual angle with the desired angle. 
 
-## Accelerometer <a name="accel"></a>
-The given example code in class utilizes readings from a magnetometer, gyroscope, and accelerator to compute roll, pitch, and yaw angles, causing a major drawback in the considerable amount of time (>3min) used in just calibrating for the IMU despite its relative accuracy. Knowing the magnetometer is the most time-consuming component in calibration, our solution used only the gyroscope and accelerometer readings for pitch calculation.
+The accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods.
 
-Accelerometer alone: $\theta_A = \arctan(\frac{ax}{\sqrt{ay^2+az^2}})$
-Gyrscope alone: $\theta_G = \theta_G + \omega \cdot dt$
+## Accelerometer <a name="accel"></a>
+One way to measure the pitch angle is utilizing accelermoter in the IMU which measures linear acceleration in the X, Y, and Z axes. The formula to determine $\theta_A$, the pitch angle from acceleromter reading is:
+
+$\theta_A = \arctan(\frac{a_x}{\sqrt{a_y^2+a_z^2}})$
+
+Here, $a_x, a_y, a_y$ represent the acceleration readings along the X, Y, and Z axes, respectively. This calculation uses the gravitational components of the accelerometer readings to determine how tilted the device is relative to the horizontal plane. 
 
 ## Gyroscope <a name="gyro"></a>
-The accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods.
+Gyroscope measures an object's angular rate with respect to an inertial reference frame. Our IMU, the ICM-20948, outputs three digital signals representing the angular rates for the X, Y, and Z axes. The angle can be calculated using the equation below, where $\omega$ represents the angular rate in degrees per second, $dt$ is the elapsed time, and $\theta_G$ denotes the pitch angle in degrees.
+
+$\theta_G = \theta_G + \omega \cdot dt$
+
 
 ## Complementary Filter  <a name="filter"></a>
 A complementary filter is used to combine the features of both and optimize the pitch reading, thus leading to: 
@@ -56,3 +63,5 @@ $\theta = 0.98*\theta_G + 0.02*\theta_A$
 # Results<a name="results"></a>
 
 # Conclusion<a name="conclusion"></a>
+
+# References<a name="references"></a>
