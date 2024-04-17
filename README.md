@@ -29,7 +29,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 
 
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
-The first goal of our project is to use two motors and IMU to create a seesaw-looking testing bed for PID control on only the y-axis. This step aims to get team members familiarized with the PID control algorithm, test all the existing hardware components, and get IMU functional reading the pitch angle. 
+The first goal of our project is to use two motors and IMU to create a seesaw-looking testing bed for PID control on only the y-axis. A critical initial step in this process involves obtaining a precise and stable measurement of the system's angle, which serves as a fundamental component of our feedback control system. The PID controller begins by reading $\theta$, the current pitch angle, and compares it to a target value. Based on this comparison, adjustments are made using the Proportional, Integral, and Derivative constants to align the actual angle with the desired angle. 
 
 ## Accelerometer <a name="accel"></a>
 The given example code in class utilizes readings from a magnetometer, gyroscope, and accelerator to compute roll, pitch, and yaw angles, causing a major drawback in the considerable amount of time (>3min) used in just calibrating for the IMU despite its relative accuracy. Knowing the magnetometer is the most time-consuming component in calibration, our solution used only the gyroscope and accelerometer readings for pitch calculation.
