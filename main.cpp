@@ -1,17 +1,3 @@
-/* ICM20948 Basic Example Code
- by: Kris Winer
- modified by Eric Nativel MBEB_OS6 port 
- date: 29, MArch 2021
- license: Beerware - Use this code however you'd like. If you
- find it useful you can buy me a beer some time.
- Modified by Brent Wilkins July 19, 2016
- Demonstrate basic ICM20948 functionality including parameterizing the register
- addresses, initializing the sensor, getting properly scaled accelerometer,
- gyroscope, and magnetometer data out. Added display functions to allow display
- to on breadboard monitor. Addition of 9 DoF sensor fusion using open source
- Madgwick and Mahony filter algorithms. Pimoroni icm20948 and stm32L432kc nucleo board
- */
-
 #include "mbed.h"
 #include "ahrs.h"
 #include "Servo.h"
@@ -25,15 +11,14 @@ typedef unsigned char byte;
 float selft[6];
 static BufferedSerial pc(USBTX, USBRX);
 
-Servo myservo(p21);
+Servo leftMotor(p21);
+Servo rightMotor(p22);
 
 
 char msg[255];
 
 void setup()
 {
-     //Set up I2C
-    
     pc.set_baud(9600);
     pc.set_format(
         /* bits */ 8,
@@ -105,8 +90,6 @@ void setup()
     // Initialize device for active mode read of magnetometer
     // sprintf(msg,"AK09916 initialized for active data mode....\n");
     // pc.write(msg, strlen(msg));
-   
-  
 
     // Get sensor resolutions, only need to do this once
     getAres();
@@ -133,21 +116,24 @@ void setup()
 }
 
 void calibrateESC() {
-    myservo = 0.0;
+    leftMotor = 0.0;
+    rightMotor = 0.0;
     wait_us(500000); //ESC detects signal
 //Required ESC Calibration/Arming sequence  
 //sends longest and shortest PWM pulse to learn and arm at power on
-    myservo = 1.0; //send longest PWM
+    leftMotor = 1.0; //send longest PWM
+    rightMotor = 1.0;
     wait_us(8000000);
-    myservo = 0.0; //send shortest PWM
+    leftMotor = 0.0; //send shortest PWM
+    rightMotor = 0.0;
     wait_us(8000000);
 }
 
-#define ALPHA 0.00  // Complementary filter constant: not using gyro basically
-#define DESIRED_ANGLE 10.0
+#define DESIRED_ANGLE 0
+#define DEFAULT_THROTTLE 0.44
 
 // PID gains
-#define KP 0.009  // Proportional gain
+#define KP 0.01  // Proportional gain
 #define KI 0.00  // Integral gain
 #define KD 0.00  // Derivative gain
 
@@ -222,7 +208,6 @@ int main(void) {
             // Calculate PID output
             pid = pid_p + pid_i + pid_d;
 
-            // Implement PID output to control the motor here
             previous_error = error;
 
             if (pid > 1) pid = 0.5;
@@ -235,7 +220,8 @@ int main(void) {
                 pc.write(msg, strlen(msg));
             }
             
-            myservo = 0.43 + pid;
+            leftMotor = DEFAULT_THROTTLE + pid;
+            // rightMotor = DEFAULT_THROTTLE - pid;
 
 
         }
