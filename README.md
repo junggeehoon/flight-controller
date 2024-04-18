@@ -32,7 +32,6 @@ Drones have a wide range of applications in agriculture, military and defense, a
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
 The first goal of our project is to use two motors and IMU to create a seesaw-looking testing bed for PID control on only the y-axis. A critical initial step in this process involves obtaining a precise and stable measurement of the system's angle, which serves as a fundamental component of our feedback control system. The PID controller begins by reading $\theta$, the current pitch angle, and compares it to a target value. Based on this comparison, adjustments are made using the Proportional, Integral, and Derivative constants to align the actual angle with the desired angle. 
 
-The accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods.
 
 ## Accelerometer <a name="accel"></a>
 One way to measure the pitch angle is utilizing accelermoter in the IMU which measures linear acceleration in the X, Y, and Z axes. The formula to determine $\theta_A$, the pitch angle from acceleromter reading is:
@@ -48,7 +47,8 @@ $\theta_G = \theta_G + \omega \cdot dt$
 
 
 ## Complementary Filter  <a name="filter"></a>
-A complementary filter is used to combine the features of both and optimize the pitch reading, thus leading to: 
+The accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods. To achieve the highest possible level of accuracy, IMU calibration and filtering methods such as low-pass filters, averaging filters, and Kalman filters are widely used. In this project, a complementary filter for sensor fusion was used to balance high accuracy with minimal latency. This approach leads to:
+
 $\theta = 0.98*\theta_G + 0.02*\theta_A$
 
 # Second Step: Controlling Brushless Motors with ESC’s and PWM <a name="step2"></a>
