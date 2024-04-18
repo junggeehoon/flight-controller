@@ -38,7 +38,7 @@ One way to measure the pitch angle is utilizing accelermoter in the IMU which me
 
 $\theta_A = \arctan(\frac{a_x}{\sqrt{a_y^2+a_z^2}})$
 
-Here, $a_x, a_y, a_y$ represent the acceleration readings along the X, Y, and Z axes, respectively. This calculation uses the gravitational components of the accelerometer readings to determine how tilted the device is relative to the horizontal plane. 
+Here, $a_x, a_y, a_z$ represent the acceleration readings along the X, Y, and Z axes, respectively. This calculation uses the gravitational components of the accelerometer readings to determine how tilted the device is relative to the horizontal plane. 
 
 ## Gyroscope <a name="gyro"></a>
 Gyroscope measures an object's angular rate with respect to an inertial reference frame. Our IMU, the ICM-20948, outputs three digital signals representing the angular rates for the X, Y, and Z axes. The angle can be calculated using the equation below, where $\omega$ represents the angular rate in degrees per second, $dt$ is the elapsed time, and $\theta_G$ denotes the pitch angle in degrees.
