@@ -92,22 +92,20 @@ void setup()
     }
 }
 
-    void calibrateESC() {
-        leftMotor = 0.0;
-        rightMotor = 0.0;
-        wait_us(500000); //ESC detects signal
-    //Required ESC Calibration/Arming sequence  
-    //sends longest and shortest PWM pulse to learn and arm at power on
-        leftMotor = 1.0; //send longest PWM
-        rightMotor = 1.0;
-        wait_us(8000000);
-        leftMotor = 0.0; //send shortest PWM
-        rightMotor = 0.0;
-        wait_us(8000000);
-    }
+void calibrateESC() {
+    leftMotor = 0.0;
+    rightMotor = 0.0;
+    wait_us(500000); //ESC detects signal
+//Required ESC Calibration/Arming sequence  
+//sends longest and shortest PWM pulse to learn and arm at power on
+    leftMotor = 1.0; //send longest PWM
+    rightMotor = 1.0;
+    wait_us(8000000);
+    leftMotor = 0.0; //send shortest PWM
+    rightMotor = 0.0;
+    wait_us(8000000);
+}
 
- 
-// #define DESIRED_ANGLE 0
 
 #define DEFAULT_THROTTLE 0.30
 
@@ -167,7 +165,7 @@ void bluetooth_callback() {
 int main(void) {
     setup(); //setup IMU
     bluetooth.baud(9600);
-    
+
     sprintf(msg,"Calibrating gyro...");
     pc.write(msg, strlen(msg));
     calibrateGyro();
