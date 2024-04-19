@@ -21,8 +21,9 @@ Drones have a wide range of applications in agriculture, military and defense, a
 # Hardware <a name="hardware"></a>
 - Mbed LPC1768
 - ICM-20948
-- A2212 brushless motor
-- 30A ESC
+- Two A2212 brushless motor
+- Two 30A ESC
+- Adafruit Bluefruit LE UART Friend
 - One-axis PID testing bed
 
 # Schematic Diagram <a name="schematic"></a>
