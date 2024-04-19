@@ -21,8 +21,9 @@ Drones have a wide range of applications in agriculture, military and defense, a
 # Hardware <a name="hardware"></a>
 - Mbed LPC1768
 - ICM-20948
-- A2212 brushless motor
-- 30A ESC
+- Two A2212 brushless motor
+- Two 30A ESC
+- Adafruit Bluefruit LE UART Friend
 - One-axis PID testing bed
 
 # Schematic Diagram <a name="schematic"></a>
@@ -52,6 +53,25 @@ The accelerometer has unstable reading but it demonstrates minimal long-term dri
 $\theta = 0.98*\theta_G + 0.02*\theta_A$
 
 # Second Step: Controlling Brushless Motors with ESC’s and PWM <a name="step2"></a>
+
+## Introduction to Brushless Motors
+
+Brushless DC (BLDC) motors are increasingly favored in a variety of applications due to their high efficiency, reliability, and superior performance over brushed motor counterparts. These motors operate on the fundamental principles of electromagnetism through the interaction of magnetic fields and electric currents. The motor comprises two main parts: the rotor, which is the rotating part equipped with magnets, and the stator, which remains stationary and houses coils of wire. As the electric current flows through these coils, it creates a magnetic field that interacts with the magnets on the rotor, causing it to turn.
+
+## Role of the Electronic Speed Controller (ESC)
+
+In systems requiring precise control of brushless motors, the Electronic Speed Controller (ESC) is pivotal. The ESC serves as an intermediary between the microcontroller and the motor itself. It interprets control signals from the microcontroller, usually in the form of pulse width modulation (PWM), and translates these into three-phase AC power suitable for driving the motor. This capability allows the ESC to adjust the speed and torque of the motor dynamically, based on real-time inputs from the control system.
+
+## PWM Signals
+
+Pulse Width Modulation (PWM) is a crucial technique in electronic control systems used to regulate the amount of power delivered to an electrical device. The technique involves varying the width of the voltage pulses in a digital signal, thereby controlling the average voltage and power supplied to the device. In motor control, PWM enables precise adjustments to the speed of a brushless motor. The frequency of the PWM signal dictates how fast the pulses are sent, while the duty cycle (expressed as a percentage) determines what fraction of each pulse period is high voltage. By adjusting these parameters, the microcontroller can finely tune the motor's speed and torque.
+
+## Practical Implementation of Motor Control
+
+In practical applications, the microcontroller sends a PWM signal to the ESC, dictating the desired speed of the motor. The ESC receives this input and adjusts the motor phase currents accordingly. This is often managed through a closed-loop system using feedback from sensors to allow real-time speed corrections, ensuring that the motor operates at the desired set point. The integration of a Proportional-Integral-Derivative (PID) controller helps in minimizing the error between the actual and desired motor states, facilitating precise control of the motor's behavior.
+
+The use of ESCs and PWM for controlling brushless motors is a cornerstone of modern electronic design, enabling advanced functionalities in robotics, aerospace, automotive, and consumer electronics. As technology progresses, we can anticipate further improvements in ESC design, such as enhanced power efficiency, reduced size, and integration of more sophisticated control algorithms. These developments will expand the potential applications for brushless motors, making them integral to the next generation of intelligent systems.
+
 
 
 # Third Step: Stabilizing Seesaw with PID Controllers<a name="step3"></a>
