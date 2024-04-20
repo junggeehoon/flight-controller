@@ -107,20 +107,20 @@ void calibrateESC() {
 }
 
 
-#define DEFAULT_THROTTLE 0.45
+#define DEFAULT_THROTTLE 0.3
 
 // #define DESIRED_ANGLE 0.0
 
 // PID gains
 // #define KP 0.006  // Proportional gain
-volatile double KP = 0.003;
+volatile double KP = 0.0031;
 
 // volatile double KI = 0.000085;
-volatile double KI = 0.0000;
+volatile double KI = 0.000005;
 
 // #define KI 0.00  // Integral gain
 // #define KD 0.000004 // Derivative gain
-volatile double KD = 0.0008;
+volatile double KD = 0.000015;
 
 
 // Complemtary filter for combination with gyro
@@ -206,21 +206,21 @@ int main(void) {
             switch (newBnum) {
                 case '5':
                     if (newBhit == '1') {
-                        KP += 0.0005;
+                        KI += 0.0000001;
                         // sprintf(msg, "\nKD::: %.10f", KD);
                         // pc.write(msg, strlen(msg));
                     }
                     break;
                 case '6':
                     if (newBhit == '1') {
-                        KP -= 0.0005;
+                        KI -= 0.0000001;
                         // sprintf(msg, "\nKD::: %.10f", KD);
                         // pc.write(msg, strlen(msg));
                     }
                     break;
                 case '7': // Button 7 left arrow
                     if (newBhit == '1') {
-                        KD -= 0.00002;
+                        KD -= 0.0000005;
                         // sprintf(msg, "\nKP::: %.10f", KP);
                         // pc.write(msg, strlen(msg));
                         // DESIRED_ANGLE -= (DESIRED_ANGLE > -45.0) ? 5.0 : 0;
@@ -230,7 +230,7 @@ int main(void) {
                     break;
                 case '8': // Button 8 right arrow
                     if (newBhit == '1') {
-                        KD += 0.00002;
+                        KD += 0.0000005;
                         // sprintf(msg, "\nKP::: %.10f", KP);
                         // pc.write(msg, strlen(msg));
                         // DESIRED_ANGLE += (DESIRED_ANGLE < 45.0) ? 5.0 : 0;
@@ -275,7 +275,12 @@ int main(void) {
             
             pid_p = KP * error;
 
-            pid_i += KI * error * dt;
+            if (-10 < error < 10) {
+                pid_i += KI * error * dt;
+            } else {
+                pid_i = 0.0;
+            }
+            
 
             pid_d = KD * ((error - previous_error) / dt);
 
@@ -291,7 +296,7 @@ int main(void) {
 
             if (count % 300 == 0) {
                 count = 0; 
-                sprintf(msg, "\nKP: %f, KD: %f, pid: %f", KP, KD, pid);
+                sprintf(msg, "\nKP: %f, KD: %f, KI: %f, pid_i: %f, pitch: %f", KP, KD, KI, pid_i, pitch);
                 pc.write(msg, strlen(msg));
                 // sprintf(msg, "\nAngle: %f, Throtte_left: %f, Throttle_right: %f", pitch, DEFAULT_THROTTLE + pid, DEFAULT_THROTTLE - pid);
                 // pc.write(msg, strlen(msg));
@@ -299,7 +304,7 @@ int main(void) {
             
             (DESIRED_ANGLE > -45.0) ? 5.0 : 0;
 
-            leftMotor  = DEFAULT_THROTTLE - pid; 
+            leftMotor  = DEFAULT_THROTTLE + 0.097 - pid; 
             rightMotor = DEFAULT_THROTTLE + pid;
 
 
