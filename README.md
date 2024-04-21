@@ -27,7 +27,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - One-axis PID testing bed
 
 # Schematic Diagram <a name="schematic"></a>
-![circuit](https://github.com/junggeehoon/flight-controller/assets/23613481/04a26715-009d-446a-9a19-c7e88912c7b0)
+![circuit (1)](https://github.com/junggeehoon/flight-controller/assets/23613481/56f3b912-8228-41e1-82d0-ac1d3fcbae46)
 
 
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
