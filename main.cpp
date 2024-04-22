@@ -6,7 +6,8 @@
 #include <stdint.h>
 
 using namespace std::chrono;
-Timer t1;
+// Timer t1;
+// Timer t2;
 typedef unsigned char byte;
 float selft[6];
 static BufferedSerial pc(USBTX, USBRX);
@@ -48,8 +49,8 @@ void setup()
     // Start by performing self test and reporting values
     ICM20948SelfTest(selft);
 
-    sprintf(msg,"y-axis self test: gyration trim within : %f of factory value\n",selft[4]);
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"y-axis self test: gyration trim within : %f of factory value\n",selft[4]);
+    // pc.write(msg, strlen(msg));
     // sprintf(msg,"z-axis self test: gyration trim within : %f of factory value\n",selft[5]);
     // pc.write(msg, strlen(msg));
     // Calibrate gyro and accelerometers, load biases in bias registers
@@ -107,22 +108,6 @@ void calibrateESC() {
 }
 
 
-#define DEFAULT_THROTTLE 0.3
-
-// #define DESIRED_ANGLE 0.0
-
-// PID gains
-// #define KP 0.006  // Proportional gain
-volatile double KP = 0.0031;
-
-// volatile double KI = 0.000085;
-volatile double KI = 0.000005;
-
-// #define KI 0.00  // Integral gain
-// #define KD 0.000004 // Derivative gain
-volatile double KD = 0.000015;
-
-
 // Complemtary filter for combination with gyro
 #define ALPHA 0.98 
 
@@ -170,19 +155,33 @@ void bluetooth_callback() {
     }
 }
 
+
+#define DEFAULT_THROTTLE 0.3
+
+// PID gains
+// #define KP 0.006  // Proportional gain
+volatile double KP = 0.0031;
+
+// volatile double KI = 0.00002;
+volatile double KI = 0.000006;
+
+// #define KI 0.00  // Integral gain
+// #define KD 0.000004 // Derivative gain
+volatile double KD = 0.000013;
+
 int main(void) {
     setup(); //setup IMU
     bluetooth.baud(9600);
 
-    sprintf(msg,"\nCalibrating gyro...");
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"\nCalibrating gyro...");
+    // pc.write(msg, strlen(msg));
     calibrateGyro();
 
-    sprintf(msg, "\ngy bias: %f degrees", gyroBias[1]);
-    pc.write(msg, strlen(msg));
+    // sprintf(msg, "\ngy bias: %f degrees", gyroBias[1]);
+    // pc.write(msg, strlen(msg));
     
-    sprintf(msg,"\nCalibrating the ESC...");
-    pc.write(msg, strlen(msg));
+    // sprintf(msg,"\nCalibrating the ESC...");
+    // pc.write(msg, strlen(msg));
     calibrateESC();
 
     float pitch_gyro = 0.0f;
@@ -196,8 +195,11 @@ int main(void) {
     float pid_d = 0.0f;
     float pid = 0.0f;
     Timer timer;
+    Timer timer1;
     timer.start();
+    timer1.start();
     int count = 0;
+    float t = 0;
     bluetooth.attach(&bluetooth_callback, UnbufferedSerial::RxIrq);
     while (1) {
         if (newDataFlag) {
@@ -206,36 +208,40 @@ int main(void) {
             switch (newBnum) {
                 case '5':
                     if (newBhit == '1') {
-                        KI += 0.0000001;
+                        KP += 0.00005;
+                        // KI += 0.0000001;
                         // sprintf(msg, "\nKD::: %.10f", KD);
                         // pc.write(msg, strlen(msg));
                     }
                     break;
                 case '6':
                     if (newBhit == '1') {
-                        KI -= 0.0000001;
+                        KP -= 0.00005;
+                        // KI -= 0.0000001;
                         // sprintf(msg, "\nKD::: %.10f", KD);
                         // pc.write(msg, strlen(msg));
                     }
                     break;
                 case '7': // Button 7 left arrow
                     if (newBhit == '1') {
-                        KD -= 0.0000005;
+                        // KI -= 0.000001;
+                        // KD -= 0.0000005;
                         // sprintf(msg, "\nKP::: %.10f", KP);
                         // pc.write(msg, strlen(msg));
-                        // DESIRED_ANGLE -= (DESIRED_ANGLE > -45.0) ? 5.0 : 0;
-                        // sprintf(msg, "\nAHHHHH %2.0f", DESIRED_ANGLE);
-                        // pc.write(msg, strlen(msg));
+                        DESIRED_ANGLE -= (DESIRED_ANGLE > -45.0) ? 5.0 : 0;
+                        sprintf(msg, "\nAHHHHH %2.0f", DESIRED_ANGLE);
+                        pc.write(msg, strlen(msg));
                     }
                     break;
                 case '8': // Button 8 right arrow
                     if (newBhit == '1') {
-                        KD += 0.0000005;
+                        // KI += 0.000001;
+                        // KD += 0.0000005;
                         // sprintf(msg, "\nKP::: %.10f", KP);
                         // pc.write(msg, strlen(msg));
-                        // DESIRED_ANGLE += (DESIRED_ANGLE < 45.0) ? 5.0 : 0;
-                        // sprintf(msg, "\nAHHHHH %2.0f", DESIRED_ANGLE);
-                        // pc.write(msg, strlen(msg));
+                        DESIRED_ANGLE += (DESIRED_ANGLE < 45.0) ? 5.0 : 0;
+                        sprintf(msg, "\nAHHHHH %2.0f", DESIRED_ANGLE);
+                        pc.write(msg, strlen(msg));
                     }
                     break;
                 
@@ -262,7 +268,9 @@ int main(void) {
 
             // Calculate time delta
             auto duration = timer.elapsed_time();
+            auto duration1 = timer1.elapsed_time();
             dt = duration_cast<milliseconds>(duration).count() / 1000.0f;
+            t = duration_cast<milliseconds>(duration1).count() / 1000.0f;
             timer.reset();  // Reset timer for the next loop
 
             pitch_gyro = pitch + gy * dt;
@@ -275,7 +283,7 @@ int main(void) {
             
             pid_p = KP * error;
 
-            if (-10 < error < 10) {
+            if (5 < error < 5) {
                 pid_i += KI * error * dt;
             } else {
                 pid_i = 0.0;
@@ -294,17 +302,19 @@ int main(void) {
 
             count++;
 
-            if (count % 300 == 0) {
+            if (count % 20 == 0) {
                 count = 0; 
-                sprintf(msg, "\nKP: %f, KD: %f, KI: %f, pid_i: %f, pitch: %f", KP, KD, KI, pid_i, pitch);
+                // sprintf(msg, "\nKP: %f, KD: %f, KI: %f, pid_p: %f, pid_d: %f, pid_i: %f, pitch: %f", KP, KD, KI, pid_p, pid_d, pid_i, pitch);
+                // pc.write(msg, strlen(msg));
+                sprintf(msg, "\nPitch: %f duraction: %f", pitch, t);
                 pc.write(msg, strlen(msg));
-                // sprintf(msg, "\nAngle: %f, Throtte_left: %f, Throttle_right: %f", pitch, DEFAULT_THROTTLE + pid, DEFAULT_THROTTLE - pid);
+                // sprintf(msg, "\nDesired Angle: %f, Current Angle: %f", DESIRED_ANGLE, pitch);
                 // pc.write(msg, strlen(msg));
             }
             
             (DESIRED_ANGLE > -45.0) ? 5.0 : 0;
 
-            leftMotor  = DEFAULT_THROTTLE + 0.097 - pid; 
+            leftMotor  = DEFAULT_THROTTLE + 0.093 - pid; 
             rightMotor = DEFAULT_THROTTLE + pid;
 
 
