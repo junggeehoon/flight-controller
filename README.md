@@ -1,5 +1,5 @@
 # Flight controller for Mbed quadcopter
-This documentation is for our team project in the Embedded Systems (ECE 4180). Our group includes Geehoon Jung, Mindy Yao, Jooyeon Lee, and Nikita Gulati.
+Documentation of Embedded Systems Design Final Project. Project contributors are Geehoon Jung, Mindy Yao, Jooyeon Lee, Nikita Gulati.
 
 # Project Overview
 Drones have a wide range of applications in agriculture, military and defense, and transportation. While commercial drones use pre-existing flight controller modules like speedybee, our project works towards constructing a quadcopter with four motors piloted by ARM mbed LPC1768 in integration with an IMU module. Due to the limited time we have for the project, we broke down the project into small chunks focusing PID controller system to balance the drone automatically.
@@ -86,8 +86,9 @@ The use of ESCs and PWM for controlling brushless motors is a cornerstone of mod
 # Fourth Step: Bluetooth Angle Controller <a name="step4"></a>
 As using an RF controller in the steering of a drone, we decided to use the Adafruit Bluetooth app and the Bluetooth module with mbed to implement the control of the desired angle of our seesaw. Bluetooth controller was also used when we were finetuning the kp, ki, and kd values in real-time.
 
-![image](https://github.com/junggeehoon/flight-controller/assets/124639150/52f6c0b6-64bc-4566-981f-846d4cbbe369)
+![image](https://github.com/junggeehoon/flight-controller/assets/124639150/52f6c0b6-64bc-4566-981f-846d4cbbe369)    ![image](https://github.com/junggeehoon/flight-controller/assets/87514868/715dadea-ae46-4570-b50d-292ee7aa7d9f)
 
+The left and right arrow keys allow easy pitch i.e. tilt control of the prototype. Tilt control is useful in altering the drones orienattion and direction of motion. The arrow keys serve as an intuitive joystick control.
 
 # Results<a name="results"></a>
 
