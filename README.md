@@ -1,5 +1,5 @@
 # Flight controller for Mbed quadcopter
-This documentation is for our team project in the Embedded Systems (ECE 4180). Our group includes Geehoon Jung, Mindy Yao, Jooyeon Lee, and Nikita Gulati.
+Documentation of Embedded Systems Design Final Project. Project contributors are Geehoon Jung, Mindy Yao, Jooyeon Lee, Nikita Gulati.
 
 # Project Overview
 Drones have a wide range of applications in agriculture, military and defense, and transportation. While commercial drones use pre-existing flight controller modules like speedybee, our project works towards constructing a quadcopter with four motors piloted by ARM mbed LPC1768 in integration with an IMU module. Due to the limited time we have for the project, we broke down the project into small chunks focusing PID controller system to balance the drone automatically.
@@ -13,6 +13,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
     - [Complementary Filter](#FILTER)
 - [Second Step: Controlling Brushless Motors with ESC’s and PWM](#step2)
 - [Third Step: Stabilizing Seesaw with PID Controllers](#step3)
+- [Fourth Step: Bluetooth Angle COntroller](#step4)
 - [Results](#results)
 - [Conclusion](#conclusion)
 - [References](#references)
@@ -27,7 +28,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - One-axis PID testing bed
 
 # Schematic Diagram <a name="schematic"></a>
-![circuit](https://github.com/junggeehoon/flight-controller/assets/23613481/04a26715-009d-446a-9a19-c7e88912c7b0)
+![circuit (1)](https://github.com/junggeehoon/flight-controller/assets/23613481/56f3b912-8228-41e1-82d0-ac1d3fcbae46)
 
 
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
@@ -68,17 +69,26 @@ Pulse Width Modulation (PWM) is a crucial technique in electronic control system
 
 ## Practical Implementation of Motor Control
 
-In practical applications, the microcontroller sends a PWM signal to the ESC, dictating the desired speed of the motor. The ESC receives this input and adjusts the motor phase currents accordingly. This is often managed through a closed-loop system using feedback from sensors to allow real-time speed corrections, ensuring that the motor operates at the desired set point. The integration of a Proportional-Integral-Derivative (PID) controller helps in minimizing the error between the actual and desired motor states, facilitating precise control of the motor's behavior.
+In practical applications, the microcontroller sends a PWM signal to the ESC, dictating the desired speed of the motor. The ESC receives this input and adjusts the motor phase currents accordingly. This is often managed through a closed-loop system using feedback from sensors to allow real-time speed corrections, ensuring that the motor operates at the desired set point. The integration of a Proportional-Integral-Derivative (PID) controller helps minimize the error between the actual and desired motor states, facilitating precise control of the motor's behavior.
 
 The use of ESCs and PWM for controlling brushless motors is a cornerstone of modern electronic design, enabling advanced functionalities in robotics, aerospace, automotive, and consumer electronics. As technology progresses, we can anticipate further improvements in ESC design, such as enhanced power efficiency, reduced size, and integration of more sophisticated control algorithms. These developments will expand the potential applications for brushless motors, making them integral to the next generation of intelligent systems.
 
 
 
-# Third Step: Stabilizing Seesaw with PID Controllers<a name="step3"></a>
+# Third Step: Stabilizing Seesaw with PID Controllers <a name="step3"></a>
 ## PID control <a name="PID"></a>
 
   $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
 
+![image](https://github.com/junggeehoon/flight-controller/assets/124639150/ad2658c7-c77c-4942-82cd-7566ace18ea1)
+
+
+# Fourth Step: Bluetooth Angle Controller <a name="step4"></a>
+As using an RF controller in the steering of a drone, we decided to use the Adafruit Bluetooth app and the Bluetooth module with mbed to implement the control of the desired angle of our seesaw. Bluetooth controller was also used when we were finetuning the kp, ki, and kd values in real-time.
+
+![image](https://github.com/junggeehoon/flight-controller/assets/124639150/52f6c0b6-64bc-4566-981f-846d4cbbe369)    ![image](https://github.com/junggeehoon/flight-controller/assets/87514868/715dadea-ae46-4570-b50d-292ee7aa7d9f)
+
+The left and right arrow keys allow easy pitch i.e. tilt control of the prototype. Tilt control is useful in altering the drones orienattion and direction of motion. The arrow keys serve as an intuitive joystick control.
 
 # Results<a name="results"></a>
 
