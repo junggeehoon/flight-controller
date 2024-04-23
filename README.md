@@ -10,7 +10,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - [First Step: Measuring accurate angle with IMU](#step1)
     - [Accelerometer](#accel)
     - [Gyroscope](#gyro)
-    - [Complementary Filter](#FILTER)
+    - [Complementary Filters for Sensor Fusion](#FILTER)
 - [Second Step: Controlling Brushless Motors with ESC’s and PWM](#step2)
 - [Third Step: Stabilizing Seesaw with PID Controllers](#step3)
 - [Fourth Step: Bluetooth Angle COntroller](#step4)
@@ -28,7 +28,7 @@ Drones have a wide range of applications in agriculture, military and defense, a
 - One-axis PID testing bed
 
 # Schematic Diagram <a name="schematic"></a>
-![circuit (1)](https://github.com/junggeehoon/flight-controller/assets/23613481/56f3b912-8228-41e1-82d0-ac1d3fcbae46)
+![circuit (2)](https://github.com/junggeehoon/flight-controller/assets/23613481/8d55b359-241e-437c-9cee-04a9fcf35d6f)
 
 
 # First Step: Measuring accurate angle with IMU <a name="step1"></a>
@@ -48,7 +48,7 @@ Gyroscope measures an object's angular rate with respect to an inertial referenc
 $\theta_G = \theta_G + \omega \cdot dt$
 
 
-## Complementary Filter  <a name="filter"></a>
+## Complementary Filters for Sensor Fusion <a name="filter"></a>
 The accelerometer has unstable reading but it demonstrates minimal long-term drift, maintaining a relatively stable baseline. In contrast, the gyroscope provides highly accurate measurements that are consistent and precise in the short term, but it is susceptible to gradual drift, accumulating errors over extended periods. To achieve the highest possible level of accuracy, IMU calibration and filtering methods such as low-pass filters, averaging filters, and Kalman filters are widely used. In this project, a complementary filter for sensor fusion was used to balance high accuracy with minimal latency. This approach leads to:
 
 $\theta = 0.98*\theta_G + 0.02*\theta_A$
