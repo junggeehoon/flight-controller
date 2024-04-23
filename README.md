@@ -91,6 +91,13 @@ As using an RF controller in the steering of a drone, we decided to use the Adaf
 The left and right arrow keys allow easy pitch i.e. tilt control of the prototype. Tilt control is useful in altering the drones orienattion and direction of motion. The arrow keys serve as an intuitive joystick control.
 
 # Results<a name="results"></a>
+The figure below illustrates how the system responds to the desired state specified by the user. The green line represents the target system behavior, in this case, zero degrees. The red line shows how our PID controller approaches the desired goal.
+
+
+![pid_pretty](https://github.com/junggeehoon/flight-controller/assets/23613481/3b506e1b-bf19-40ba-b2c0-ea1555daf2a3)
+
+Our PID controller demonstrates optimal behavior. As the figure shows, the PID controller slightly overshoots the goal and then corrects itself, indicating that it is suitable for a quadcopter flight controller.
+
 
 # Conclusion<a name="conclusion"></a>
 
