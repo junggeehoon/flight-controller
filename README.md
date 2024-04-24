@@ -94,7 +94,8 @@ The left and right arrow keys allow easy pitch i.e. tilt control of the prototyp
 The figure below illustrates how the system responds to the desired state specified by the user. The green line represents the target system behavior, in this case, zero degrees. The red line shows how our PID controller approaches the desired goal.
 
 
-![pid_pretty](https://github.com/junggeehoon/flight-controller/assets/23613481/3b506e1b-bf19-40ba-b2c0-ea1555daf2a3)
+![pid_pretty](https://github.com/junggeehoon/flight-controller/assets/23613481/0eb9c46e-87a1-409d-94ec-92d76a98cd3b)
+
 
 Our PID controller demonstrates optimal behavior. As the figure shows, the PID controller slightly overshoots the goal and then corrects itself, indicating that it is suitable for a quadcopter flight controller.
 
