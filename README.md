@@ -77,7 +77,7 @@ The use of ESCs and PWM for controlling brushless motors is a cornerstone of mod
 
 # Third Step: Stabilizing Seesaw with PID Controllers <a name="step3"></a>
 ## PID control <a name="PID"></a>
-PID stands *Proportional, Integral and Derivative.* A PID controller continuously calculates an error value $e(t)$ as the difference between a desired setpoint and applies a correction based on proportional, integral, and derivatives terms [[1]](#4).
+PID stands *Proportional, Integral and Derivative.* A PID controller continuously calculates an error value $e(t)$ as the difference between a desired setpoint and applies a correction based on proportional, integral, and derivatives terms [[1]](#1).
 
 
 The overall control function $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
@@ -100,16 +100,19 @@ The left and right arrow keys allow easy pitch i.e. tilt control of the prototyp
 The figure below illustrates how the system responds to the desired state specified by the user. The green line represents the target system behavior, in this case, zero degrees. The red line shows how our PID controller approaches the desired goal.
 
 
-![pid_pretty](https://github.com/junggeehoon/flight-controller/assets/23613481/0eb9c46e-87a1-409d-94ec-92d76a98cd3b)
+![pid](https://github.com/junggeehoon/flight-controller/assets/23613481/0eb9c46e-87a1-409d-94ec-92d76a98cd3b)
 
 
 Our PID controller demonstrates optimal behavior. As the figure shows, the PID controller slightly overshoots the goal and then corrects itself, indicating that it is suitable for a quadcopter flight controller.
 
 
 # Conclusion<a name="conclusion"></a>
+In this project, we focused on controlling single axis to stabilize a seesaw structure. We successfully implement a PID controller and controlled the angle using a Bluetooth module. The project primarily involved two critical tasks: accurately calculating the angle using an IMU and fine-tuning the PID constants. The IMU was essential to our feedback system, and achieving precise angle measurements was a key componenet of our project. This required multiple strategies, including calibration, sensor fusion, and various filtering techniques. We calibrated the gyroscope and used sensor fusion with a complementary filter, but the results still contained noise. Future work will involve introducing other filtering methods, such as the Kalman Filter. The second part involved tuning the PID constants. It was challenging to ptredict the optimal $K_p, K_i, K_d$ values without the aid of computer simulation. To address this, future work will incorporate dynamic modeling and computer simulations to enhance our control strategy.
+
 
 # References<a name="references"></a>
-1. [PID brushless motor control tutorial](https://www.youtube.com/watch?v=AN3yxIBAxTA&t=494s)
-2. [How I Developed the Scout Flight Controller](https://timhanewich.medium.com/)
-3. [How to Write your own Flight Controller Software](https://reefwing.medium.com/how-to-write-your-own-flight-controller-software-part-1-ac08b6ecc01e)
-4. [Proportional–integral–derivative controller](https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller) <a name="4"></a>
+1. [Proportional–integral–derivative controller](https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller) <a name="1"></a>
+2. [PID brushless motor control tutorial](https://www.youtube.com/watch?v=AN3yxIBAxTA&t=494s)
+3. [How I Developed the Scout Flight Controller](https://timhanewich.medium.com/)
+4. [How to Write your own Flight Controller Software](https://reefwing.medium.com/how-to-write-your-own-flight-controller-software-part-1-ac08b6ecc01e)
+
