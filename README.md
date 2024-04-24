@@ -77,10 +77,16 @@ The use of ESCs and PWM for controlling brushless motors is a cornerstone of mod
 
 # Third Step: Stabilizing Seesaw with PID Controllers <a name="step3"></a>
 ## PID control <a name="PID"></a>
+PID stands *Proportional, Integral and Derivative.* A PID controller continuously calculates an error value $e(t)$ as the difference between a desired setpoint and applies a correction based on proportional, integral, and derivatives terms [[1]](#4).
 
-  $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
 
-![image](https://github.com/junggeehoon/flight-controller/assets/124639150/ad2658c7-c77c-4942-82cd-7566ace18ea1)
+The overall control function $u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) \, d\tau + K_d \frac{d}{dt}e(t)$
+
+In this case, the error represents angle difference and produce an appropriate level of thrust required to balance our seesaw.
+
+![PID_en](https://github.com/junggeehoon/flight-controller/assets/23613481/4df70c2f-ddac-49ad-8204-d227a8b79601)
+
+
 
 
 # Fourth Step: Bluetooth Angle Controller <a name="step4"></a>
@@ -103,7 +109,7 @@ Our PID controller demonstrates optimal behavior. As the figure shows, the PID c
 # Conclusion<a name="conclusion"></a>
 
 # References<a name="references"></a>
-- [PID brushless motor control tutorial](https://www.youtube.com/watch?v=AN3yxIBAxTA&t=494s)
-- [How I Developed the Scout Flight Controller](https://timhanewich.medium.com/)
-- [How to Write your own Flight Controller Software](https://reefwing.medium.com/how-to-write-your-own-flight-controller-software-part-1-ac08b6ecc01e)
-- [Proportional–integral–derivative controller](https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller)
+1. [PID brushless motor control tutorial](https://www.youtube.com/watch?v=AN3yxIBAxTA&t=494s)
+2. [How I Developed the Scout Flight Controller](https://timhanewich.medium.com/)
+3. [How to Write your own Flight Controller Software](https://reefwing.medium.com/how-to-write-your-own-flight-controller-software-part-1-ac08b6ecc01e)
+4. [Proportional–integral–derivative controller]<a name="4"></a>(https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller)
