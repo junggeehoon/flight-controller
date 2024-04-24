@@ -112,4 +112,4 @@ Our PID controller demonstrates optimal behavior. As the figure shows, the PID c
 1. [PID brushless motor control tutorial](https://www.youtube.com/watch?v=AN3yxIBAxTA&t=494s)
 2. [How I Developed the Scout Flight Controller](https://timhanewich.medium.com/)
 3. [How to Write your own Flight Controller Software](https://reefwing.medium.com/how-to-write-your-own-flight-controller-software-part-1-ac08b6ecc01e)
-4. [Proportional–integral–derivative controller]<a name="4"></a>(https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller)
+4. [Proportional–integral–derivative controller](https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller) <a name="4"></a>
