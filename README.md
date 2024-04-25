@@ -1,4 +1,4 @@
-# Flight controller for Mbed quadcopter
+# PID Seesaw
 Documentation of Embedded Systems Design Final Project. Project contributors are Geehoon Jung, Mindy Yao, Jooyeon Lee, Nikita Gulati.
 
 # Project Overview
