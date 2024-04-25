@@ -105,6 +105,10 @@ The figure below illustrates how the system responds to the desired state specif
 
 Our PID controller demonstrates optimal behavior. As the figure shows, the PID controller slightly overshoots the goal and then corrects itself, indicating that it is suitable for a quadcopter flight controller.
 
+![pid_compare](https://github.com/junggeehoon/flight-controller/assets/23613481/4394fc72-968d-41ee-8a94-50d3ff6d6e21)
+
+The diagram above depicts the PID system with various $K_p$ values.
+
 
 # Conclusion<a name="conclusion"></a>
 In this project, we focused on controlling single axis to stabilize a seesaw structure. We successfully implement a PID controller and controlled the angle using a Bluetooth module. The project primarily involved two critical tasks: accurately calculating the angle using an IMU and fine-tuning the PID constants. The IMU was essential to our feedback system, and achieving precise angle measurements was a key componenet of our project. This required multiple strategies, including calibration, sensor fusion, and various filtering techniques. We calibrated the gyroscope and used sensor fusion with a complementary filter, but the results still contained noise. Future work will involve introducing other filtering methods, such as the Kalman Filter. The second part involved tuning the PID constants. It was challenging to predict the optimal $K_p, K_i, K_d$ values without the aid of computer simulation. To address this, future work will incorporate dynamic modeling and computer simulations to enhance our control strategy.
